@@ -549,6 +549,12 @@ importers:
         specifier: ^8.20.0
         version: 8.44.1(eslint@9.36.0)(typescript@5.9.2)
 
+  libs/shared-auth: {}
+
+  libs/shared-db: {}
+
+  libs/shared-kernel: {}
+
 packages:
 
   '@angular-devkit/core@17.3.11':
