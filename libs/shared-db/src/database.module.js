@@ -25,7 +25,7 @@ exports.DatabaseModule = DatabaseModule = __decorate([
                     password: process.env.DB_PASS || 'password',
                     database: process.env.DB_NAME || 'test',
                     autoLoadEntities: true,
-                    synchronize: true, // ⚠️ solo en desarrollo
+                    synchronize: true,
                 }),
             }),
         ],
