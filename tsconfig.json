@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@shared-kernel": ["libs/shared-kernel/src"],
+      "@shared-kernel/*": ["libs/shared-kernel/src/*"],
+      "@shared-auth/*": ["libs/shared-auth/src/*"],
+      "@shared-db": ["libs/shared-db/src"],
+      "@shared-db/*": ["libs/shared-db/src/*"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false
+  },
+  // "include": ["apps", "libs"],
+  "include": ["apps/**/*.ts", "libs/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
