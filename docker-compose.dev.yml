@@ -1,0 +1,64 @@
+version: "3.9"
+
+name: micro-retail-nest-dev
+
+networks:
+  micro_retail_net:
+    name: micro_retail_net
+    driver: bridge
+
+volumes:
+  pg_data_micro_retail:
+  mysql_data_micro_retail:
+
+services:
+  auth-postgres:
+    image: postgres:16-alpine
+    container_name: auth-postgres
+    restart: unless-stopped
+    networks: [micro_retail_net]
+    environment:
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+    ports:
+      - "${AUTH_DB_PORT_HOST:-55432}:5432"
+    volumes:
+      - pg_data_micro_retail:/var/lib/postgresql/data
+      - ./docker/init/postgres:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_DB_USER} -d ${AUTH_DB_NAME}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  biz-mysql:
+    image: mysql:8.4
+    container_name: biz-mysql
+    restart: unless-stopped
+    networks: [micro_retail_net]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${MYSQL_PORT_HOST:-33306}:3306"
+    volumes:
+      - mysql_data_micro_retail:/var/lib/mysql
+      - ./docker/init/mysql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  adminer:
+    image: adminer:4
+    container_name: db-adminer
+    restart: unless-stopped
+    networks: [micro_retail_net]
+    ports:
+      - "${ADMINER_PORT_HOST:-18080}:8080"
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+      biz-mysql:
+        condition: service_healthy
